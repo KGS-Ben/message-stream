@@ -19,7 +19,7 @@ class MessageStream {
      */
     constructor(streamName, url = 'redis://127.0.0.1:6379') {
         this.url = url;
-        this.streamName = `work:queue:${streamName}`;
+        this.streamName = `stream:${streamName}`;
         this.consumerGroup = `${streamName}:consumer:group`;
         this.consumerId = process.env?.pm_id ?? '0';
 
@@ -40,7 +40,7 @@ class MessageStream {
         } catch (error) {
             if (error.message != 'BUSYGROUP Consumer Group name already exists') {
                 console.error(error);
-                throw Error('Failed to connect to the message stream');
+                throw Error(`Failed to connect to the stream (${this.streamName})`);
             }
         }
     }
@@ -58,7 +58,8 @@ class MessageStream {
         try {
             await this.client.disconnect();
         } catch (error) {
-            throw Error('Failed to disconnect from message stream');
+            console.error(error);
+            throw Error(`Failed to disconnect from the stream (${this.streamName})`);
         }
     }
 
@@ -66,14 +67,19 @@ class MessageStream {
      * Add a message to the stream
      *
      * @param {any} data
-     * @returns {String} ID of the message in the queue
+     * @returns {String} ID of the message in the stream
      */
     async addMessage(data) {
-        let messageId = await this.client.XADD(this.streamName, '*', {
-            data: JSON.stringify(data),
-        });
-
-        return messageId;
+        try {
+            let messageId = await this.client.XADD(this.streamName, '*', {
+                data: JSON.stringify(data),
+            });
+    
+            return messageId;
+        } catch (error) {
+            console.error(error);
+            throw Error(`Failed to add message to stream (${this.streamName})`);
+        }
     }
 
     /**
@@ -107,10 +113,10 @@ class MessageStream {
     }
 
     /**
-     * Get a message from the message stream.
-     * Failed messages are retrieved before new messages
+     * Get a message from the stream.
+     * Failed messages are retrieved before new messages.
      *
-     * @returns {Object} Message Id and Message data added with addMessage()
+     * @returns {Object} { id, message } Message Id and Message data added with addMessage()
      */
     async consumeMessage() {
         let id;
@@ -132,6 +138,7 @@ class MessageStream {
                     { key: this.streamName, id: '>' },
                     { BLOCK: 2000, COUNT: 1 }
                 );
+
                 if (!res || !res.length) {
                     throw new NoMessageFoundError();
                 }
@@ -186,10 +193,15 @@ class MessageStream {
      * @returns {Number} Number of messages in the stream
      */
     async length() {
-        return this.client.XLEN(this.streamName);
+        try {
+            return await this.client.XLEN(this.streamName);
+        } catch (error) {
+            console.error(error)
+            throw Error(`Failed to get length of stream (${this.streamName})`)
+        }
     }
 }
 
 module.exports = {
-    statusStream,
+    MessageStream,
 };
