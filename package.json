@@ -1,0 +1,23 @@
+{
+    "name": "redis-utils",
+    "description": "Utilities for Redis functionality",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "prettier": "npx prettier . --write",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KGS-Ben/redis-utils.git"
+    },
+    "author": "KGS-Ben",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/KGS-Ben/redis-utils/issues"
+    },
+    "homepage": "https://github.com/KGS-Ben/redis-utils#readme",
+    "devDependencies": {
+        "prettier": "^3.1.1"
+    }
+}
