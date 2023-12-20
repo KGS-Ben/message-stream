@@ -22,7 +22,7 @@ A redis implementation of a queue
 ```js
 let queue = new MessageQueue('testing');
 await queue.connect();
-await queue.push({someKey: 'Some data'});
+await queue.push({ someKey: 'Some data' });
 
 while (await queue.size()) {
     console.log(await queue.pop()); // { someKey: 'Some data' }

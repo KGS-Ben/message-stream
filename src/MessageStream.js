@@ -74,7 +74,7 @@ class MessageStream {
             let messageId = await this.client.XADD(this.streamName, '*', {
                 data: JSON.stringify(data),
             });
-    
+
             return messageId;
         } catch (error) {
             console.error(error);
@@ -196,8 +196,8 @@ class MessageStream {
         try {
             return await this.client.XLEN(this.streamName);
         } catch (error) {
-            console.error(error)
-            throw Error(`Failed to get length of stream (${this.streamName})`)
+            console.error(error);
+            throw Error(`Failed to get length of stream (${this.streamName})`);
         }
     }
 }

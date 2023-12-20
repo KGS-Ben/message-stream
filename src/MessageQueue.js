@@ -84,7 +84,7 @@ class MessageQueue {
             return await this.client.LLEN(this.queueName);
         } catch (error) {
             console.error(error);
-            throw Error(`Failed to retrieve queue length (${this.queueName})`)
+            throw Error(`Failed to retrieve queue length (${this.queueName})`);
         }
     }
 }
