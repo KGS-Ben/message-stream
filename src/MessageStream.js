@@ -86,7 +86,10 @@ class MessageStream {
         let message;
 
         try {
-            let res = await this.client.XAUTOCLAIM(this.streamName, this.consumerGroup, this.consumerId, 0, '0', { BLOCK: 0, COUNT: 1 });
+            let res = await this.client.XAUTOCLAIM(this.streamName, this.consumerGroup, this.consumerId, 0, '0', {
+                BLOCK: 0,
+                COUNT: 1,
+            });
 
             if (res && res.messages.length) {
                 id = res.messages[0].id;
@@ -123,7 +126,12 @@ class MessageStream {
 
         if (!message) {
             try {
-                let res = await this.client.XREADGROUP(this.consumerGroup, this.consumerId, { key: this.streamName, id: '>' }, { BLOCK: 2000, COUNT: 1 });
+                let res = await this.client.XREADGROUP(
+                    this.consumerGroup,
+                    this.consumerId,
+                    { key: this.streamName, id: '>' },
+                    { BLOCK: 2000, COUNT: 1 }
+                );
                 if (!res || !res.length) {
                     throw new NoMessageFoundError();
                 }
@@ -166,7 +174,9 @@ class MessageStream {
             }
         } catch (error) {
             console.error(error);
-            throw Error(`Failed to delete processed messages (${this.streamName} ${this.consumerGroup} ${this.consumerId})`);
+            throw Error(
+                `Failed to delete processed messages (${this.streamName} ${this.consumerGroup} ${this.consumerId})`
+            );
         }
     }
 
