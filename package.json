@@ -1,7 +1,7 @@
 {
   "name": "@kgs-research/redis-utils",
   "description": "Utilities for Redis functionality",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "prettier": "npx prettier . --write",
