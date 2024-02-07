@@ -26,6 +26,11 @@ class MessageStream {
         this.client = redis.createClient({
             url: url,
         });
+        this.client.on('connect', () => {
+            console.log(`Connected to Message Stream (${this.streamName})`);
+        });
+        this.client.on('error', (err) => console.error(err));
+        
         this.processedMessageIds = new Set();
     }
 
