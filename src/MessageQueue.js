@@ -14,6 +14,11 @@ class MessageQueue {
         this.client = redis.createClient({
             url: url,
         });
+        this.client.on('connect', () => {
+            console.log(`Connected to Message Queue (${this.queueName})`);
+        });
+        this.client.on('error', (err) => console.error(err));
+
     }
 
     /**
